@@ -13,3 +13,9 @@ class MemoryStore(object):
     def set(self, key, value):
         self._data[key] = value
         return value
+
+    def remove(self, key):
+        if key in self._data:
+            del self._data[key]
+            return True
+        return False

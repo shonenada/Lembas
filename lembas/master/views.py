@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import json
 
-from flask import Blueprint, request, url_for, abort, Response
+from flask import Blueprint, request, url_for, abort, Response, jsonify
 
 from lembas.store import current_store
 
@@ -25,5 +25,13 @@ def set_key(key):
     data = request.get_json()
     if data is None:
         return abort(400)
+
     current_store.set(key, data)
-    return url_for('master.get_key', key=key, _external=True)
+    url = url_for('master.get_key', key=key, _external=True)
+    return jsonify(success=True, url=url)
+
+
+@bp.route('/_/<key>', methods=['DELETE'])
+def delete_key(key):
+    rv = current_store.remove(key)
+    return jsonify(success=rv)
