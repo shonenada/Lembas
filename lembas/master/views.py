@@ -9,6 +9,13 @@ from lembas.store import current_store
 bp = Blueprint('master', __name__)
 
 
+@bp.route('/')
+def index():
+    return jsonify(
+        host=url_for('master.index', _external=True)
+    )
+
+
 @bp.route('/<key>')
 def get_key(key):
     value = current_store.get(key)
