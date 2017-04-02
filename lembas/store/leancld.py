@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import leancloud
+from leancloud import LeanCloudError
 
 
 class KV(leancloud.Object):
@@ -26,18 +27,32 @@ class LeanCloudStore(object):
         sk = app.config['STORE_LEANCLOUD_SK']
         leancloud.init(ak, sk)
 
-    def get(self, key):
+    def get_obj(self, key):
         query = KV.query
         query.equal_to('key', key)
-        obj = query.first()
+        try:
+            obj = query.first()
+        except LeanCloudError:
+            return None
+        return obj
+
+    def get(self, key):
+        obj = self.get_obj(key)
         if obj is not None:
             return obj.get('data')
         return None
 
     def set(self, key, value):
+        obj = self.get_obj(key)
+        if obj is not None:
+            obj.set('data', value)
+            obj.save()
+            return obj
         return KV.create(key, value)
 
     def remove(self, key):
-        obj = self.get(key)
+        obj = self.get_obj(key)
+        if obj is None:
+            return False
         obj.destroy()
         return True
