@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 class MemoryStore(object):
 
-    def __init__(self):
+    def __init__(self, app=None):
         self._data = {}
 
     def get(self, key):

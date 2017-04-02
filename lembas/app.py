@@ -3,15 +3,19 @@
 from __future__ import absolute_import
 
 from werkzeug.utils import import_string
-from flask import Flask, current_app, request, session
+from flask import Flask, current_app, request
 from envcfg.raw import lembas
 
 from lembas.utils.logger import setup_logger
+from lembas.store import StoreBackend
 
 
 blueprints = [
     'lembas.master.views:bp',
 ]
+
+
+store = StoreBackend()
 
 
 def create_app(name=None, config=None):
@@ -21,6 +25,8 @@ def create_app(name=None, config=None):
 
     app.debug = bool(int(lembas.DEBUG))
     app.config['TESTING'] = bool(int(lembas.TESTING))
+
+    store.init_app(app)
 
     setup_logger(app)
     setup_hook(app)
