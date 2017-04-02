@@ -6,6 +6,7 @@ from flask import current_app, has_request_context
 
 from lembas.store.memory import MemoryStore
 from lembas.store.redis import RedisStore
+from lembas.store.leancld import LeanCloudStore
 
 
 class _StoreState(object):
@@ -28,11 +29,16 @@ class StoreBackend(object):
         app.config.setdefault('STORE_BROKER', 'memory')
         app.extensions['store'] = _StoreState(self)
 
-        if app.config['STORE_BROKER'] == 'memory':
+        broker = app.config['STORE_BROKER']
+
+        if broker == 'memory':
             self._broker = MemoryStore(app)
 
-        if app.config['STORE_BROKER'] == 'redis':
+        if broker == 'redis':
             self._broker = RedisStore(app)
+
+        if broker == 'leancloud':
+            self._broker = LeanCloudStore(app)
 
 
 current_store = LocalProxy(lambda: _get_current_store())
