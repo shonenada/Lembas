@@ -27,9 +27,12 @@ class LeanCloudStore(object):
         leancloud.init(ak, sk)
 
     def get(self, key):
-        query = leancloud.Query('KV')
+        query = KV.query
         query.equal_to('key', key)
-        return query.find()
+        obj = query.first()
+        if obj is not None:
+            return obj.get('data')
+        return None
 
     def set(self, key, value):
         return KV.create(key, value)
