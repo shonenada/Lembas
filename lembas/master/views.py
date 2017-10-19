@@ -28,8 +28,8 @@ def get_key(key, ext):
         return abort(404)
     mime = mimes.get(ext, 'plain/text')
     data = request.args.to_dict()
-    tml = render_template_string(value, **data)
-    return Response(value, mimetype=mime)
+    content = render_template_string(value, **data)
+    return Response(content, mimetype=mime)
 
 
 @bp.route('/_/<key>', methods=['POST', 'PUT', 'PATCH'])
