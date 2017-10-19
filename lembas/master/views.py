@@ -26,8 +26,8 @@ def get_key(key, ext):
     value = current_store.get(key)
     if value is None:
         return abort(404)
-    mime = mines.get(ext, 'plain/text')
-    data = request.args.to_dist()
+    mime = mimes.get(ext, 'plain/text')
+    data = request.args.to_dict()
     tml = render_template_string(value, **data)
     return Response(value, mimetype=mime)
 
